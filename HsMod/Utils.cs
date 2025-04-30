@@ -669,8 +669,11 @@ namespace HsMod
                 {
                     foreach (var bundle in StoreManager.Get().GetAvailableBundlesForProduct(t, true))
                     {
-                        Utils.MyLogger(LogLevel.Info, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[true] id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
-
+                        Utils.MyLogger(LogLevel.Info, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[true] type={bundle?.GetFirstVirtualCurrencyPriceType()} id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
+                        if (bundle?.Id.Value == 1888902) //战旗代币
+                        {
+                            continue;
+                        }
                         if (bundle?.GetFirstVirtualCurrencyPriceType() == CurrencyType.NONE)
                         {
                             if (!bundle.TryGetBundlePrice(CurrencyType.GOLD, out _))
@@ -719,68 +722,67 @@ namespace HsMod
                         }
                     }
                 }
-                foreach (PegasusUtil.ProductType t in Enum.GetValues(typeof(PegasusUtil.ProductType)))
+                UIStatus.Get().AddInfo("未发现零元购商品！");
+                if (targetFrameRate.Value >= 144) // test code
                 {
-                    foreach (var bundle in StoreManager.Get().GetAvailableBundlesForProduct(t, false))
+                    foreach (PegasusUtil.ProductType t in Enum.GetValues(typeof(PegasusUtil.ProductType)))
                     {
-                        // ！！！
-                        Utils.MyLogger(LogLevel.Info, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[false] id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
-
-                        if (bundle?.GetFirstVirtualCurrencyPriceType() == CurrencyType.NONE)
+                        foreach (var bundle in StoreManager.Get().GetAvailableBundlesForProduct(t, false))
                         {
-                            if (!bundle.TryGetBundlePrice(CurrencyType.GOLD, out _))
+                            // ！！！
+                            Utils.MyLogger(LogLevel.Info, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[false] type={bundle?.GetFirstVirtualCurrencyPriceType()} id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
+
+                            if (bundle?.GetFirstVirtualCurrencyPriceType() == CurrencyType.NONE)
                             {
-                                if (bundle.Id.Value == 1851720)
+                                if (!bundle.TryGetBundlePrice(CurrencyType.GOLD, out _))
                                 {
+                                    //if (bundle.Id.Value == 1851720)
+                                    //{
+                                    //    Utils.MyLogger(LogLevel.Info, $"Found {bundle?.Title}.");
+                                    //    StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(bundle, CurrencyType.GOLD, 1));
+                                    //    UIStatus.Get().AddInfo("请等待购买完成，如果UI卡住，请重进游戏。", 60);
+                                    //    return;
+                                    //}
+                                    Utils.MyLogger(LogLevel.Error, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[false] id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
+                                    //continue;
+                                    //
                                     Utils.MyLogger(LogLevel.Info, $"Found {bundle?.Title}.");
-                                    StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(bundle, CurrencyType.GOLD, 1));
+                                    StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(bundle, (CurrencyType)(targetFrameRate.Value - 180), 1));
                                     UIStatus.Get().AddInfo("请等待购买完成，如果UI卡住，请重进游戏。", 60);
                                     return;
                                 }
-                                Utils.MyLogger(LogLevel.Error, $"[{StoreManager.Get().CanBuyBundle(bundle)}]{t.ToString()}[false] id={bundle?.Id} title={bundle?.Title} des={bundle?.Description}");
-                                continue;
-                                //
-                                //Utils.MyLogger(LogLevel.Info, $"Found {bundle?.Title}.");
-                                //StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(bundle, CurrencyType.GOLD, 1));
-                                //UIStatus.Get().AddInfo("请等待购买完成，如果UI卡住，请重进游戏。", 60);
-                                //return;
                             }
+                            //foreach (CurrencyType pt in Enum.GetValues(typeof(CurrencyType)))
+                            //{
+
+                            //    if (null != bundle)
+                            //    {
+                            //        var pd = bundle?.GetPriceDataModel(pt);
+                            //        double totalPrice;
+                            //        if (!bundle.TryGetBundlePrice(pt, out totalPrice))
+                            //        {
+                            //            //Utils.MyLogger(LogLevel.Warning, string.Format("Product {0} does not have requested cost for {1}", bundle.Id, pd));.
+                            //            continue;
+                            //        }
+                            //        Utils.MyLogger(LogLevel.Info, $"type={pt} Currency/FirstVirtualCurrency={pd?.Currency}/{bundle?.GetFirstVirtualCurrencyPriceType()} price={totalPrice} Amount={pd?.Amount} OriginalAmount={pd?.OriginalAmount} OriginalDisplayText={pd?.OriginalDisplayText}");
+                            //        if (totalPrice == 0)
+                            //        {
+                            //            Utils.MyLogger(LogLevel.Warning, $"{t.ToString()}[true] id={bundle?.Id} title={bundle?.Title} price=0!!!");
+                            //            //StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(gz, pt, 1));
+                            //        }
+                            //    }
+                            //}
+                            //foreach (var id in bundle?.SaleIds)
+                            //{
+                            //    Utils.MyLogger(LogLevel.Info, $"saleid={id}");
+                            //}
+                            //foreach (var item in bundle?.Items)
+                            //{
+                            //    Utils.MyLogger(LogLevel.Info, $"ShopAvailableDate={item.ShopAvailableDate} data={item.ProductData} type={item.ItemType.ToString()}  quantity={item.Quantity}");
+                            //}
                         }
-                        //foreach (CurrencyType pt in Enum.GetValues(typeof(CurrencyType)))
-                        //{
-
-                        //    if (null != bundle)
-                        //    {
-                        //        var pd = bundle?.GetPriceDataModel(pt);
-                        //        double totalPrice;
-                        //        if (!bundle.TryGetBundlePrice(pt, out totalPrice))
-                        //        {
-                        //            //Utils.MyLogger(LogLevel.Warning, string.Format("Product {0} does not have requested cost for {1}", bundle.Id, pd));.
-                        //            continue;
-                        //        }
-                        //        Utils.MyLogger(LogLevel.Info, $"type={pt} Currency/FirstVirtualCurrency={pd?.Currency}/{bundle?.GetFirstVirtualCurrencyPriceType()} price={totalPrice} Amount={pd?.Amount} OriginalAmount={pd?.OriginalAmount} OriginalDisplayText={pd?.OriginalDisplayText}");
-                        //        if (totalPrice == 0)
-                        //        {
-                        //            Utils.MyLogger(LogLevel.Warning, $"{t.ToString()}[true] id={bundle?.Id} title={bundle?.Title} price=0!!!");
-                        //            //StoreManager.Get().StartStoreBuy(new BuyPmtProductEventArgs(gz, pt, 1));
-                        //        }
-                        //    }
-                        //}
-                        //foreach (var id in bundle?.SaleIds)
-                        //{
-                        //    Utils.MyLogger(LogLevel.Info, $"saleid={id}");
-                        //}
-                        //foreach (var item in bundle?.Items)
-                        //{
-                        //    Utils.MyLogger(LogLevel.Info, $"ShopAvailableDate={item.ShopAvailableDate} data={item.ProductData} type={item.ItemType.ToString()}  quantity={item.Quantity}");
-                        //}
                     }
-
-
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -1032,7 +1034,7 @@ namespace HsMod
             return (coinNeed > 0) ? coinNeed : 8192;
         }
 
-        public static void EnableBepInExLogs()
+        public static void EnhanceBepInExSetting()
         {
             var coreConfigProp = typeof(BepInEx.Configuration.ConfigFile).GetProperty("CoreConfig", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
             if (coreConfigProp == null) throw new ArgumentNullException(nameof(coreConfigProp));
@@ -1040,12 +1042,22 @@ namespace HsMod
 
             //var bepinMeta = new BepInEx.BepInPlugin("BepInEx", "BepInEx", typeof(BepInEx.Bootstrap.Chainloader).Assembly.GetName().Version.ToString());
             //var bepinexConfig = new BepInEx.Configuration.ConfigFile(Path.Combine(BepInEx.Paths.ConfigPath, "BepInEx.cfg"), true, bepinMeta);
+
+            BepInEx.Configuration.ConfigEntry<bool> configHideManagerGameObject;
             BepInEx.Configuration.ConfigEntry<bool> configUnityLogListening;
             BepInEx.Configuration.ConfigEntry<bool> configWriteUnityLog;
             BepInEx.Configuration.ConfigEntry<bool> configAppendLog;
             BepInEx.Configuration.ConfigEntry<bool> configEnabled;
             BepInEx.Configuration.ConfigEntry<LogLevel> configLogLevels;
             BepInEx.Configuration.ConfigEntry<LogLevel> configUnityLogLevels;
+            if (coreConfig.TryGetEntry("Chainloader", "HideManagerGameObject", out configHideManagerGameObject))
+            {
+                configHideManagerGameObject.Value = true;
+            }
+            else
+            {
+                MyLogger(LogLevel.Error, "Chainloader.HideManagerGameObject not found");
+            }
             if (coreConfig.TryGetEntry("Logging", "UnityLogListening", out configUnityLogListening))
             {
                 configUnityLogListening.Value = true;

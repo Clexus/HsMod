@@ -23,7 +23,7 @@ namespace HsMod
             // enable logging bepinex and unity to disk without append
             try
             {
-                Utils.EnableBepInExLogs();
+                Utils.EnhanceBepInExSetting();
             }
             catch (Exception ex)
             {

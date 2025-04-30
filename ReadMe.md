@@ -65,7 +65,8 @@ Note: The plugin is currently not fully translated.
 51. Support Webshell, the path is /shell. need to be enabled in the settings, the current Chinese display may be garbled.
 52. Allow reading local files via web, i.e. parsing static pages. This function is still under development, currently using `Hearthstone/BepInEx/HsMod` as the root directory.
 53. ~~Allow lifting the set recognition restriction to open Manning Hearthstone.~~ Has been fixed by Blizzard.
-54. Attempt to disable anti-cheat.
+54. ~~Zero-Dollor Shopping~~ Has been fixed by Blizzard.
+55. Attempt to disable anti-cheat.
 
 ### Installation Instructions 
 
