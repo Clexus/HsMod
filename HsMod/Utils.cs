@@ -1042,6 +1042,7 @@ namespace HsMod
 
             //var bepinMeta = new BepInEx.BepInPlugin("BepInEx", "BepInEx", typeof(BepInEx.Bootstrap.Chainloader).Assembly.GetName().Version.ToString());
             //var bepinexConfig = new BepInEx.Configuration.ConfigFile(Path.Combine(BepInEx.Paths.ConfigPath, "BepInEx.cfg"), true, bepinMeta);
+            bool restart = false;
 
             BepInEx.Configuration.ConfigEntry<bool> configHideManagerGameObject;
             BepInEx.Configuration.ConfigEntry<bool> configUnityLogListening;
@@ -1052,6 +1053,10 @@ namespace HsMod
             BepInEx.Configuration.ConfigEntry<LogLevel> configUnityLogLevels;
             if (coreConfig.TryGetEntry("Chainloader", "HideManagerGameObject", out configHideManagerGameObject))
             {
+                if (configHideManagerGameObject.Value == false)
+                {
+                    restart = true;
+                }
                 configHideManagerGameObject.Value = true;
             }
             else
@@ -1105,6 +1110,12 @@ namespace HsMod
             else
             {
                 MyLogger(LogLevel.Warning, $"{BepInEx.Paths.BepInExConfigPath}: Logging.Unity.LogLevels not found.");
+            }
+            if (restart)
+            {
+                Utils.MyLogger(BepInEx.Logging.LogLevel.Error, "BepInEx config update. Please restart Heartstone!");
+                System.Threading.Thread.Sleep(1919);
+                Utils.Quit(1919810);
             }
         }
 
